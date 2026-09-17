@@ -1,0 +1,13 @@
+import { Inbox } from 'lucide-react'
+
+export default function EmptyState({ icon: Icon = Inbox, title = 'Nothing here yet', message }) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 px-6 py-14 text-center">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+        <Icon size={22} />
+      </span>
+      <p className="mt-3 text-sm font-medium text-gray-700">{title}</p>
+      {message && <p className="mt-1 max-w-sm text-sm text-gray-500">{message}</p>}
+    </div>
+  )
+}
