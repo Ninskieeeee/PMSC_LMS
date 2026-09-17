@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import DashboardLayout from './components/layout/DashboardLayout'
 import LoginPage from './pages/auth/LoginPage'
+import LandingPage from './pages/LandingPage'
 
 import AdminOverview from './pages/admin/Overview'
 import ManageStudents from './pages/admin/ManageStudents'
@@ -53,10 +54,10 @@ function ProtectedRoute({ allowedRoles, children }) {
   return children
 }
 
-function RootRedirect() {
+function RootRoute() {
   const { isAuthenticated, role } = useAuth()
 
-  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (!isAuthenticated) return <LandingPage />
   return <Navigate to={DASHBOARD_BY_ROLE[role] ?? '/login'} replace />
 }
 
@@ -64,7 +65,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<RootRedirect />} />
+      <Route path="/" element={<RootRoute />} />
 
       <Route
         path="/admin"
