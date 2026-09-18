@@ -1,15 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { GraduationCap, Lock, IdCard, Eye, EyeOff } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Lock, IdCard, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-
-const DEMO_ACCOUNTS = [
-  { role: 'Admin', access_code: 'ADM-00001', password: 'Admin@12345' },
-  { role: 'Teacher', access_code: 'TCH-00001', password: 'Teacher@123' },
-  { role: 'Finance', access_code: 'FIN-00001', password: 'Finance@123' },
-  { role: 'SSG Officer', access_code: 'SSG-00001', password: 'Ssg@12345' },
-  { role: 'Student / Parent', access_code: 'STD-00001', password: 'Student@123' },
-]
 
 const DASHBOARD_BY_ROLE = {
   admin: '/admin',
@@ -28,6 +20,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [attempts, setAttempts] = useState(0)
+  const [showHelp, setShowHelp] = useState(false)
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -37,6 +31,7 @@ export default function LoginPage() {
       const user = await login(accessCode, password)
       navigate(DASHBOARD_BY_ROLE[user.role] ?? '/login')
     } catch (err) {
+      setAttempts((count) => count + 1)
       setError(
         err.response?.data?.message ??
           err.response?.data?.errors?.access_code?.[0] ??
@@ -47,135 +42,136 @@ export default function LoginPage() {
     }
   }
 
-  function fillDemo(account) {
-    setAccessCode(account.access_code)
-    setPassword(account.password)
-    setError('')
-  }
-
   return (
-    <div className="flex min-h-screen">
-      <div className="hidden w-1/2 flex-col justify-between bg-gradient-to-br from-blue-800 via-blue-700 to-teal-600 p-10 text-white lg:flex">
-        <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15">
-            <GraduationCap size={24} />
-          </span>
-          <span className="text-lg font-bold">PMSC Clarin</span>
-        </div>
+    <div
+      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-cover bg-center px-4 py-12"
+      style={{ backgroundImage: "url('/images/login-bg.jpg')" }}
+    >
+      {/* Blue brand wash over the school photo, so the card and text stay readable. */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-950/92 via-blue-800/88 to-sky-600/80" />
 
-        <div>
-          <h1 className="text-4xl font-bold leading-tight">
-            School Management Portal
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full border border-white/10" />
+        <div className="absolute -left-16 -top-16 h-64 w-64 rounded-full border border-white/10" />
+        <div className="absolute -bottom-40 -right-24 h-[28rem] w-[28rem] rounded-full bg-sky-400/20 blur-3xl" />
+        <div className="absolute right-10 top-10 h-72 w-72 rounded-full border border-white/10" />
+        <div className="absolute bottom-24 left-1/3 h-40 w-40 rounded-full border border-white/10" />
+      </div>
+
+      <Link
+        to="/"
+        className="absolute left-4 top-4 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md transition hover:bg-white/20 sm:left-6 sm:top-6"
+      >
+        <ArrowLeft size={14} /> Back to Home
+      </Link>
+
+      <div className="relative z-10 grid w-full max-w-5xl grid-cols-1 items-center gap-12 lg:grid-cols-2">
+        <div className="flex flex-col items-center text-center">
+          <img
+            src="/images/logo.png"
+            alt="Presentation of Mary School of Clarin, Inc. seal"
+            className="h-36 w-36 drop-shadow-2xl sm:h-40 sm:w-40"
+          />
+
+          <h1 className="mt-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
+            Presentation of Mary
+            <br />
+            School of Clarin, Inc.
           </h1>
-          <p className="mt-4 max-w-md text-white/80">
-            One portal for admins, teachers, finance, SSG officers, students, and
-            parents — grades, billing, schedules, events, and QR attendance in
-            one place.
+          <p className="mt-2 text-sm font-semibold uppercase tracking-[0.3em] text-sky-200">
+            School Management System
+          </p>
+
+          <p className="mt-6 hidden max-w-sm text-sm text-white/60 lg:block">
+            &copy; {new Date().getFullYear()} PMSC Clarin. All rights reserved.
           </p>
         </div>
 
-        <p className="text-sm text-white/60">
-          &copy; {new Date().getFullYear()} PMSC Clarin. All rights reserved.
-        </p>
-      </div>
+        <div className="mx-auto w-full max-w-sm rounded-[2rem] border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+          <h2 className="text-center text-2xl font-bold uppercase tracking-widest text-white">
+            Sign In
+          </h2>
 
-      <div className="flex w-full flex-col justify-center bg-gray-50 px-6 py-12 lg:w-1/2 lg:px-16">
-        <div className="mx-auto w-full max-w-sm">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-700 text-white">
-              <GraduationCap size={20} />
-            </span>
-            <span className="text-lg font-bold text-gray-900">PMSC Clarin</span>
-          </div>
-
-          <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-1 text-sm text-gray-500">Sign in with your access code.</p>
-
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div>
-              <label htmlFor="access_code" className="mb-1 block text-sm font-medium text-gray-700">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+            <div className="relative">
+              <label htmlFor="access_code" className="sr-only">
                 Access Code
               </label>
-              <div className="relative">
-                <IdCard size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="access_code"
-                  type="text"
-                  required
-                  value={accessCode}
-                  onChange={(event) => setAccessCode(event.target.value.toUpperCase())}
-                  placeholder="ADM-00001"
-                  autoComplete="username"
-                  className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-3 font-mono uppercase tracking-wide focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                />
-              </div>
+              <IdCard size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" />
+              <input
+                id="access_code"
+                type="text"
+                required
+                value={accessCode}
+                onChange={(event) => setAccessCode(event.target.value.toUpperCase())}
+                placeholder="ACCESS CODE"
+                autoComplete="username"
+                className="w-full rounded-full border border-white/25 bg-white/10 py-3 pl-12 pr-4 font-mono text-sm uppercase tracking-wide text-white placeholder-white/60 outline-none transition focus:border-white/60 focus:bg-white/20"
+              />
             </div>
 
-            <div>
-              <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">
                 Password
               </label>
-              <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-10 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((value) => !value)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
+              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70" />
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="PASSWORD"
+                autoComplete="current-password"
+                className="w-full rounded-full border border-white/25 bg-white/10 py-3 pl-12 pr-12 text-sm text-white placeholder-white/60 outline-none transition focus:border-white/60 focus:bg-white/20"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((value) => !value)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
+            <p className="text-center text-xs font-medium uppercase tracking-wide text-white/50">
+              Login Attempts: {attempts}
+            </p>
+
             {error && (
-              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+              <p className="rounded-full bg-red-500/20 px-4 py-2 text-center text-xs font-medium text-red-100">
+                {error}
+              </p>
             )}
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-lg bg-blue-700 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:opacity-60"
+              className="w-full rounded-full bg-sky-400 py-3 text-sm font-bold uppercase tracking-widest text-blue-950 shadow-lg transition hover:bg-sky-300 disabled:opacity-60"
             >
-              {submitting ? 'Signing in…' : 'Sign In'}
+              {submitting ? 'Signing In…' : 'Log In'}
             </button>
           </form>
 
-          <div className="mt-8 rounded-xl border border-gray-200 bg-white p-4">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Demo Accounts
-            </p>
-            <div className="space-y-2">
-              {DEMO_ACCOUNTS.map((account) => (
-                <div
-                  key={account.access_code}
-                  className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm"
-                >
-                  <div>
-                    <p className="font-medium text-gray-800">{account.role}</p>
-                    <p className="font-mono text-xs text-gray-500">{account.access_code}</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => fillDemo(account)}
-                    className="rounded-md border border-blue-200 px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-50"
-                  >
-                    Fill
-                  </button>
-                </div>
-              ))}
-            </div>
+          <div className="mt-5 text-center">
+            <button
+              type="button"
+              onClick={() => setShowHelp((value) => !value)}
+              className="text-xs font-medium text-white/70 underline-offset-2 hover:text-white hover:underline"
+            >
+              Forgot password?
+            </button>
+            {showHelp && (
+              <p className="mt-2 text-xs text-white/60">
+                Contact your school administrator to reset your password.
+              </p>
+            )}
           </div>
+
+          <p className="mt-6 text-center text-xs text-white/40 lg:hidden">
+            &copy; {new Date().getFullYear()} PMSC Clarin. All rights reserved.
+          </p>
         </div>
       </div>
     </div>
