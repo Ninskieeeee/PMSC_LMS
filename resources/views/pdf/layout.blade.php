@@ -89,6 +89,17 @@
             background-color: #f4f7fa;
         }
 
+        /* Clean receipt style: white background throughout, just border lines. */
+        .clean-table th {
+            background-color: #fff;
+            color: #1a1a1a;
+            border-bottom: 1.5px solid #1a1a1a;
+        }
+
+        .clean-table tr:nth-child(even) td {
+            background-color: #fff;
+        }
+
         .section-title {
             font-size: 12px;
             font-weight: bold;

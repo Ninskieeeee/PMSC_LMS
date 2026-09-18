@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Search, Plus, History, Download } from 'lucide-react'
+import { Search, Plus, History, Eye } from 'lucide-react'
 import api from '../../utils/api'
 import Modal from '../../components/ui/Modal'
 import EmptyState from '../../components/ui/EmptyState'
+import PdfPreviewModal from '../../components/ui/PdfPreviewModal'
+import usePdfPreview from '../../utils/usePdfPreview'
 import { YEAR_LEVELS, formatCurrency, formatDate } from '../../utils/helpers'
 
 export default function Payments() {
@@ -20,6 +22,7 @@ export default function Payments() {
   const [history, setHistory] = useState([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [downloadingId, setDownloadingId] = useState(null)
+  const pdfPreview = usePdfPreview()
 
   function load() {
     setLoading(true)
@@ -70,15 +73,10 @@ export default function Payments() {
   async function downloadBilling(student) {
     setDownloadingId(student.id)
     try {
-      const response = await api.get(`/finance/students/${student.id}/billing-pdf`, { responseType: 'blob' })
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `billing-statement-${student.qr_code}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
+      await pdfPreview.preview(
+        () => api.get(`/finance/students/${student.id}/billing-pdf`, { responseType: 'blob' }),
+        `billing-statement-${student.qr_code}.pdf`,
+      )
     } finally {
       setDownloadingId(null)
     }
@@ -155,9 +153,9 @@ export default function Payments() {
                         onClick={() => downloadBilling(student)}
                         disabled={downloadingId === student.id}
                         className="rounded-lg p-1.5 text-blue-600 hover:bg-blue-50 disabled:opacity-60"
-                        aria-label="Download billing PDF"
+                        aria-label="Preview billing PDF"
                       >
-                        <Download size={15} />
+                        <Eye size={15} />
                       </button>
                     </div>
                   </td>
@@ -236,6 +234,14 @@ export default function Payments() {
           </table>
         )}
       </Modal>
+
+      <PdfPreviewModal
+        open={pdfPreview.open}
+        onClose={pdfPreview.close}
+        url={pdfPreview.url}
+        filename={pdfPreview.filename}
+        title="Billing Statement Preview"
+      />
     </div>
   )
 }

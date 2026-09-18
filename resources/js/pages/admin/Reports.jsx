@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { FileText, Download } from 'lucide-react'
+import { FileText, Eye } from 'lucide-react'
 import api from '../../utils/api'
+import PdfPreviewModal from '../../components/ui/PdfPreviewModal'
+import usePdfPreview from '../../utils/usePdfPreview'
 import { YEAR_LEVELS } from '../../utils/helpers'
 
 const REPORT_TYPES = [
@@ -15,23 +17,20 @@ export default function Reports() {
   const [yearLevel, setYearLevel] = useState('')
   const [downloading, setDownloading] = useState(null)
   const [error, setError] = useState('')
+  const pdfPreview = usePdfPreview()
 
   async function download(report) {
     setDownloading(report.type)
     setError('')
     try {
-      const response = await api.get(`/admin/reports/${report.type}`, {
-        params: { year_level: yearLevel || undefined },
-        responseType: 'blob',
-      })
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
-      const link = document.createElement('a')
-      link.href = url
-      link.download = report.filename
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
+      await pdfPreview.preview(
+        () =>
+          api.get(`/admin/reports/${report.type}`, {
+            params: { year_level: yearLevel || undefined },
+            responseType: 'blob',
+          }),
+        report.filename,
+      )
     } catch {
       setError(`Unable to generate the ${report.label} report.`)
     } finally {
@@ -72,12 +71,20 @@ export default function Reports() {
               disabled={downloading === report.type}
               className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-slate-800 py-2 text-sm font-medium text-white hover:bg-slate-900 disabled:opacity-60"
             >
-              <Download size={15} />
-              {downloading === report.type ? 'Generating…' : 'Download PDF'}
+              <Eye size={15} />
+              {downloading === report.type ? 'Generating…' : 'Preview'}
             </button>
           </div>
         ))}
       </div>
+
+      <PdfPreviewModal
+        open={pdfPreview.open}
+        onClose={pdfPreview.close}
+        url={pdfPreview.url}
+        filename={pdfPreview.filename}
+        title="Report Preview"
+      />
     </div>
   )
 }

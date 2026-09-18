@@ -14,7 +14,7 @@
     </div>
 
     <div class="section-title">Payment History</div>
-    <table>
+    <table class="clean-table">
         <thead>
             <tr>
                 <th>Date</th>
@@ -41,7 +41,7 @@
         </tbody>
     </table>
 
-    <table style="margin-top: 16px;">
+    <table class="clean-table" style="margin-top: 16px;">
         <tr>
             <th class="text-right" style="width: 70%;">Total Fee</th>
             <td class="text-right">{{ number_format($totalFee, 2) }}</td>

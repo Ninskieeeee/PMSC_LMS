@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Save, Download } from 'lucide-react'
+import { Save, Eye } from 'lucide-react'
 import api from '../../utils/api'
 import EmptyState from '../../components/ui/EmptyState'
+import PdfPreviewModal from '../../components/ui/PdfPreviewModal'
+import usePdfPreview from '../../utils/usePdfPreview'
 import { YEAR_LEVELS, QUARTERS, getGradeRemarks } from '../../utils/helpers'
 
 export default function Grades() {
@@ -15,6 +17,7 @@ export default function Grades() {
   const [saving, setSaving] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [message, setMessage] = useState('')
+  const pdfPreview = usePdfPreview()
 
   useEffect(() => {
     api.get('/teacher/schedule').then((res) => setSchedule(res.data))
@@ -71,18 +74,14 @@ export default function Grades() {
   async function handleDownload() {
     setDownloading(true)
     try {
-      const response = await api.get('/teacher/grades/pdf', {
-        params: { year_level: yearLevel || undefined, subject: subject || undefined, quarter: quarter || undefined },
-        responseType: 'blob',
-      })
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
-      const link = document.createElement('a')
-      link.href = url
-      link.download = 'grade-sheet.pdf'
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
+      await pdfPreview.preview(
+        () =>
+          api.get('/teacher/grades/pdf', {
+            params: { year_level: yearLevel || undefined, subject: subject || undefined, quarter: quarter || undefined },
+            responseType: 'blob',
+          }),
+        'grade-sheet.pdf',
+      )
     } finally {
       setDownloading(false)
     }
@@ -101,7 +100,7 @@ export default function Grades() {
           disabled={downloading}
           className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-60"
         >
-          <Download size={15} /> {downloading ? 'Preparing…' : 'Download PDF'}
+          <Eye size={15} /> {downloading ? 'Preparing…' : 'Preview PDF'}
         </button>
       </div>
 
@@ -185,6 +184,14 @@ export default function Grades() {
           </button>
         </div>
       )}
+
+      <PdfPreviewModal
+        open={pdfPreview.open}
+        onClose={pdfPreview.close}
+        url={pdfPreview.url}
+        filename={pdfPreview.filename}
+        title="Grade Sheet Preview"
+      />
     </div>
   )
 }
