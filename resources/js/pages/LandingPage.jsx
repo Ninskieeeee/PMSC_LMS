@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   GraduationCap,
-  Users,
   Wallet,
   ScanLine,
   FileText,
@@ -10,56 +9,60 @@ import {
   Smartphone,
   BookOpen,
   UserCog,
-  ArrowRight,
   QrCode,
   CheckCircle2,
   Sparkle,
   Phone,
   Mail,
   MapPin,
+  Menu,
+  X,
+  Send,
 } from 'lucide-react'
+import api from '../utils/api'
+
+const PORTAL_ACCENT = 'from-blue-700 to-teal-600'
+const PORTAL_RING = 'ring-blue-200'
 
 const ROLES = [
   {
     key: 'admin',
     label: 'Admin',
     icon: UserCog,
-    accent: 'from-slate-700 to-slate-900',
-    ring: 'ring-slate-200',
     points: ['Manage students & staff', 'School-wide reports', 'Full oversight of every module'],
   },
   {
     key: 'teacher',
     label: 'Teacher',
     icon: BookOpen,
-    accent: 'from-blue-600 to-blue-800',
-    ring: 'ring-blue-200',
     points: ['Enter grades per quarter', 'View weekly schedule', 'Download grade-sheet PDFs'],
   },
   {
     key: 'finance',
     label: 'Finance',
     icon: Wallet,
-    accent: 'from-amber-500 to-amber-700',
-    ring: 'ring-amber-200',
     points: ['Record & track payments', 'Monitor balances', 'Generate billing statements'],
   },
   {
     key: 'ssg',
     label: 'SSG Officer',
     icon: ScanLine,
-    accent: 'from-emerald-600 to-emerald-800',
-    ring: 'ring-emerald-200',
     points: ['Create & manage events', 'Live QR camera scanning', 'Full attendance logs'],
   },
   {
     key: 'student',
     label: 'Student / Parent',
     icon: GraduationCap,
-    accent: 'from-teal-600 to-teal-800',
-    ring: 'ring-teal-200',
     points: ['Grades & attendance history', 'Fee balance tracking', 'Personal QR code'],
   },
+]
+
+const NAV_LINKS = [
+  { id: 'top', label: 'Home' },
+  { id: 'foundress', label: 'Our Foundress' },
+  { id: 'roles', label: 'Portals' },
+  { id: 'features', label: 'Features' },
+  { id: 'contact', label: 'Contact' },
 ]
 
 const FEATURES = [
@@ -95,23 +98,25 @@ const FEATURES = [
   },
 ]
 
-const HERO_HIGHLIGHTS = [
-  { label: '5 Role Portals', icon: Users },
-  { label: 'Live QR Attendance', icon: QrCode },
-  { label: 'Instant PDF Reports', icon: FileText },
-]
-
 export default function LandingPage() {
-  const [highlight, setHighlight] = useState(0)
+  const [activeSection, setActiveSection] = useState('top')
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHighlight((value) => (value + 1) % HERO_HIGHLIGHTS.length)
-    }, 3200)
-    return () => clearInterval(timer)
+    const sections = NAV_LINKS.map((link) => document.getElementById(link.id)).filter(Boolean)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id)
+          }
+        })
+      },
+      { rootMargin: '-20% 0px -70% 0px', threshold: 0 },
+    )
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
   }, [])
-
-  const ActiveIcon = HERO_HIGHLIGHTS[highlight].icon
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -121,20 +126,66 @@ export default function LandingPage() {
             <img src="/images/logo.png" alt="PMSC Clarin seal" className="h-9 w-9" />
             <span className="text-base font-bold">PMSC Clarin</span>
           </div>
-          <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
-            <a href="#top" className="hover:text-blue-700">Home</a>
-            <a href="#foundress" className="hover:text-blue-700">Our Foundress</a>
-            <a href="#roles" className="hover:text-blue-700">Portals</a>
-            <a href="#features" className="hover:text-blue-700">Features</a>
-            <a href="#contact" className="hover:text-blue-700">Contact</a>
+
+          <div className="hidden items-center gap-8 text-sm font-medium md:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                className={`relative pb-1 transition ${
+                  activeSection === link.id ? 'text-blue-700' : 'text-slate-600 hover:text-blue-700'
+                }`}
+              >
+                {link.label}
+                {activeSection === link.id && (
+                  <span className="absolute -bottom-[17px] left-0 right-0 h-0.5 rounded-full bg-blue-700" />
+                )}
+              </a>
+            ))}
           </div>
-          <Link
-            to="/login"
-            className="rounded-full bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-800"
-          >
-            Sign In
-          </Link>
+
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="hidden rounded-full bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-800 sm:inline-block"
+            >
+              Sign In
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen((value) => !value)}
+              className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+              aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+            >
+              {mobileNavOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
+
+        {mobileNavOpen && (
+          <div className="border-t border-slate-200 bg-white px-6 py-4 md:hidden">
+            <div className="flex flex-col gap-1">
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  onClick={() => setMobileNavOpen(false)}
+                  className={`rounded-lg px-3 py-2.5 text-sm font-medium ${
+                    activeSection === link.id ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              ))}
+              <Link
+                to="/login"
+                className="mt-2 rounded-full bg-blue-700 px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                Sign In
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <section id="top" className="relative overflow-hidden">
@@ -157,12 +208,12 @@ export default function LandingPage() {
                 School of Clarin needs, organized in one secure, role-based system.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/login"
+                <a
+                  href="#contact"
                   className="flex items-center gap-2 rounded-full bg-blue-700 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800"
                 >
-                  Sign In
-                </Link>
+                  Contact Us
+                </a>
                 <a
                   href="#features"
                   className="rounded-full border border-slate-300 px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
@@ -184,47 +235,47 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-md">
-              <div
-                className="absolute -right-6 -top-6 h-full w-full bg-gradient-to-br from-blue-700 to-teal-500"
-                style={{ borderRadius: '62% 38% 45% 55% / 55% 45% 55% 45%' }}
-                aria-hidden="true"
-              />
-              <div
-                className="relative aspect-[4/5] w-full overflow-hidden shadow-2xl"
-                style={{ borderRadius: '62% 38% 45% 55% / 55% 45% 55% 45%' }}
+            <div className="mx-auto flex w-full max-w-md flex-col items-center">
+              <a
+                href="#foundress"
+                className="mb-4 inline-flex items-center gap-1.5 self-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 transition hover:bg-blue-100"
               >
-                <img
-                  src="/images/foundress-portrait.jpg"
-                  alt="Ven. Marie Rivier, foundress of the Sisters of the Presentation of Mary"
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-950/60 via-transparent to-transparent" />
-              </div>
+                <Sparkle size={12} /> St. Marie Rivier — Meet Our Foundress
+              </a>
 
-              <div className="absolute -bottom-6 left-1/2 w-64 -translate-x-1/2 rounded-2xl border border-slate-100 bg-white p-4 shadow-xl sm:-left-8 sm:translate-x-0">
+              <div className="relative w-full">
+                <div
+                  className="absolute -right-6 -top-6 h-full w-full bg-gradient-to-br from-blue-700 to-teal-500"
+                  style={{ borderRadius: '62% 38% 45% 55% / 55% 45% 55% 45%' }}
+                  aria-hidden="true"
+                />
+                <a
+                  href="#foundress"
+                  className="relative block aspect-[4/5] w-full overflow-hidden shadow-2xl"
+                  style={{ borderRadius: '62% 38% 45% 55% / 55% 45% 55% 45%' }}
+                >
+                  <img
+                    src="/images/foundress-portrait.jpg"
+                    alt="Ven. Marie Rivier, foundress of the Sisters of the Presentation of Mary"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-blue-950/60 via-transparent to-transparent" />
+                </a>
+
+              <a
+                href="#foundress"
+                className="absolute -bottom-6 left-1/2 w-64 -translate-x-1/2 rounded-2xl border border-slate-100 bg-white p-4 shadow-xl transition hover:-translate-y-0.5 hover:shadow-2xl sm:-left-8 sm:translate-x-0"
+              >
                 <div className="flex items-center gap-3">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-700 to-teal-600 text-white">
-                    <ActiveIcon size={18} />
+                    <Sparkle size={18} />
                   </span>
                   <div>
-                    <p className="text-sm font-bold text-slate-900">{HERO_HIGHLIGHTS[highlight].label}</p>
-                    <p className="text-xs text-slate-500">Built into every account</p>
+                    <p className="text-sm font-bold text-slate-900">Saint Marie Rivier</p>
+                    <p className="text-xs text-slate-500">Our Foundress · Est. 1796</p>
                   </div>
                 </div>
-                <div className="mt-3 flex justify-center gap-1.5">
-                  {HERO_HIGHLIGHTS.map((item, index) => (
-                    <button
-                      key={item.label}
-                      type="button"
-                      onClick={() => setHighlight(index)}
-                      aria-label={`Show ${item.label}`}
-                      className={`h-1.5 rounded-full transition-all ${
-                        index === highlight ? 'w-5 bg-blue-700' : 'w-1.5 bg-slate-200'
-                      }`}
-                    />
-                  ))}
-                </div>
+              </a>
               </div>
             </div>
           </div>
@@ -290,9 +341,9 @@ export default function LandingPage() {
           {ROLES.map((role) => (
             <div
               key={role.key}
-              className={`group rounded-2xl border border-slate-200 p-5 ring-1 ring-transparent transition hover:-translate-y-1 hover:shadow-xl hover:${role.ring}`}
+              className={`group rounded-2xl border border-slate-200 p-5 ring-1 ring-transparent transition hover:-translate-y-1 hover:shadow-xl hover:${PORTAL_RING}`}
             >
-              <span className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${role.accent} text-white`}>
+              <span className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${PORTAL_ACCENT} text-white`}>
                 <role.icon size={20} />
               </span>
               <h3 className="mt-4 font-semibold text-slate-900">{role.label}</h3>
@@ -332,38 +383,167 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-800 via-blue-700 to-teal-600 py-20">
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="text-3xl font-bold text-white">Ready to sign in?</h2>
-          <p className="mt-3 text-white/80">
-            Use your access code and password — admins, teachers, finance, SSG officers, students, and parents all sign in right here.
-          </p>
-          <Link
-            to="/login"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-blue-800 shadow-lg transition hover:bg-blue-50"
-          >
-            Go to Sign In <ArrowRight size={16} />
-          </Link>
+      <section id="contact" className="py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold text-slate-900">Get in touch</h2>
+            <p className="mt-3 text-slate-600">
+              Have feedback, a suggestion, or a question about PMSC Clarin? Send us a message below.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-5">
+            <div className="lg:col-span-2">
+              <div className="space-y-5">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                    <Phone size={18} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Call Us</p>
+                    <p className="text-sm text-slate-500">038-417-5608</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                    <Mail size={18} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Email Us</p>
+                    <p className="text-sm text-slate-500">pmscbohol2019@gmail.com</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                    <MapPin size={18} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Visit Us</p>
+                    <p className="text-sm text-slate-500">Poblacion, Clarin, Bohol</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-3">
+              <ContactForm />
+            </div>
+          </div>
         </div>
       </section>
 
-      <footer id="contact" className="border-t border-slate-200 py-10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-sm text-slate-500 sm:flex-row">
+      <footer className="border-t border-slate-200 py-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-sm text-slate-500 sm:flex-row">
           <div className="flex items-center gap-2">
             <img src="/images/logo.png" alt="PMSC Clarin seal" className="h-8 w-8" />
             <span className="font-semibold text-slate-700">Presentation of Mary School of Clarin, Inc.</span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            <span className="flex items-center gap-1.5">
-              <Phone size={13} className="text-blue-600" /> 038-417-5608
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Mail size={13} className="text-blue-600" /> pmscbohol2019@gmail.com
-            </span>
           </div>
           <p>&copy; {new Date().getFullYear()} PMSC Clarin. All rights reserved.</p>
         </div>
       </footer>
     </div>
+  )
+}
+
+function ContactForm() {
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [status, setStatus] = useState('idle')
+  const [error, setError] = useState('')
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    setStatus('submitting')
+    setError('')
+    try {
+      await api.post('/contact', form)
+      setStatus('sent')
+      setForm({ name: '', email: '', message: '' })
+    } catch (err) {
+      setStatus('idle')
+      setError(
+        err.response?.data?.message ??
+          err.response?.data?.errors?.email?.[0] ??
+          'Unable to send your message. Please try again.',
+      )
+    }
+  }
+
+  if (status === 'sent') {
+    return (
+      <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-10 text-center">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+          <Send size={20} />
+        </span>
+        <p className="mt-4 font-semibold text-emerald-800">Message sent!</p>
+        <p className="mt-1 text-sm text-emerald-700">Thank you for reaching out — we'll get back to you soon.</p>
+        <button
+          type="button"
+          onClick={() => setStatus('idle')}
+          className="mt-5 text-sm font-medium text-emerald-700 underline-offset-2 hover:underline"
+        >
+          Send another message
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="contact-name" className="mb-1 block text-xs font-medium text-slate-600">
+            Your Name
+          </label>
+          <input
+            id="contact-name"
+            type="text"
+            required
+            value={form.name}
+            onChange={(event) => setForm({ ...form, name: event.target.value })}
+            placeholder="Juan Dela Cruz"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+        <div>
+          <label htmlFor="contact-email" className="mb-1 block text-xs font-medium text-slate-600">
+            Email
+          </label>
+          <input
+            id="contact-email"
+            type="email"
+            required
+            value={form.email}
+            onChange={(event) => setForm({ ...form, email: event.target.value })}
+            placeholder="you@example.com"
+            className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="contact-message" className="mb-1 block text-xs font-medium text-slate-600">
+          Message
+        </label>
+        <textarea
+          id="contact-message"
+          required
+          rows={5}
+          value={form.message}
+          onChange={(event) => setForm({ ...form, message: event.target.value })}
+          placeholder="Share your feedback, a suggestion, or a question about PMSC Clarin…"
+          className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+        />
+      </div>
+
+      {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+
+      <button
+        type="submit"
+        disabled={status === 'submitting'}
+        className="flex items-center gap-2 rounded-full bg-blue-700 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-60"
+      >
+        <Send size={15} /> {status === 'submitting' ? 'Sending…' : 'Send Message'}
+      </button>
+    </form>
   )
 }

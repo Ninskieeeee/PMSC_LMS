@@ -20,43 +20,12 @@ import {
 import { useAuth } from '../../context/AuthContext'
 import { ROLES, initials } from '../../utils/helpers'
 
+// One shared palette for every role, matching the landing and sign-in pages.
 const THEME = {
-  admin: {
-    active: 'bg-slate-800 text-white',
-    hover: 'hover:bg-slate-100',
-    header: 'bg-slate-900',
-    badge: 'bg-slate-700 text-white',
-  },
-  teacher: {
-    active: 'bg-blue-600 text-white',
-    hover: 'hover:bg-blue-50',
-    header: 'bg-blue-700',
-    badge: 'bg-blue-100 text-blue-700',
-  },
-  finance: {
-    active: 'bg-amber-600 text-white',
-    hover: 'hover:bg-amber-50',
-    header: 'bg-amber-600',
-    badge: 'bg-amber-100 text-amber-700',
-  },
-  ssg: {
-    active: 'bg-emerald-600 text-white',
-    hover: 'hover:bg-emerald-50',
-    header: 'bg-emerald-700',
-    badge: 'bg-emerald-100 text-emerald-700',
-  },
-  student: {
-    active: 'bg-teal-600 text-white',
-    hover: 'hover:bg-teal-50',
-    header: 'bg-teal-700',
-    badge: 'bg-teal-100 text-teal-700',
-  },
-  parent: {
-    active: 'bg-teal-600 text-white',
-    hover: 'hover:bg-teal-50',
-    header: 'bg-teal-700',
-    badge: 'bg-teal-100 text-teal-700',
-  },
+  active: 'bg-gradient-to-r from-blue-700 to-teal-600 text-white',
+  hover: 'hover:bg-blue-50',
+  header: 'bg-gradient-to-r from-blue-700 to-teal-600',
+  badge: 'bg-white/15 text-white',
 }
 
 function getNavItems(role) {
@@ -109,7 +78,7 @@ export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  const theme = THEME[role] ?? THEME.admin
+  const theme = THEME
   const navItems = getNavItems(role)
   const roleLabel = ROLES[role]?.label ?? role
 
