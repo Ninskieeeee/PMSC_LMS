@@ -182,7 +182,7 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
-      <div className={`flex flex-1 flex-col transition-all duration-200 ${collapsed ? 'md:pl-20' : 'md:pl-64'}`}>
+      <div className={`flex min-w-0 flex-1 flex-col transition-all duration-200 ${collapsed ? 'md:pl-20' : 'md:pl-64'}`}>
         <header className={`sticky top-0 z-20 flex h-16 items-center justify-between px-4 text-white shadow-sm ${theme.header}`}>
           <button
             type="button"
@@ -208,7 +208,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main className="min-w-0 flex-1 overflow-y-auto p-4 md:p-6">
           <Outlet />
         </main>
       </div>
