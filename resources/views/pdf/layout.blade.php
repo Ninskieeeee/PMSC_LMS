@@ -100,6 +100,56 @@
             background-color: #fff;
         }
 
+        /* Boxed section, passbook-style. */
+        .info-box {
+            border: 1.5px solid #1a1a1a;
+            padding: 10px 12px;
+            margin-top: 12px;
+        }
+
+        .info-box-title {
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-decoration: underline;
+            margin-bottom: 8px;
+        }
+
+        .info-grid {
+            width: 100%;
+        }
+
+        .info-grid td {
+            border: none;
+            padding: 2px 0;
+            font-size: 11px;
+        }
+
+        .info-grid .label {
+            color: #555;
+            width: 18%;
+        }
+
+        .info-grid .value {
+            font-weight: bold;
+            width: 32%;
+        }
+
+        .summary-box table {
+            margin-top: 0;
+        }
+
+        .summary-box td {
+            border: none;
+            padding: 3px 0;
+        }
+
+        .summary-box .total-row td {
+            border-top: 1.5px solid #1a1a1a;
+            padding-top: 6px;
+            font-weight: bold;
+        }
+
         .section-title {
             font-size: 12px;
             font-weight: bold;

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Search, Plus, History, Eye } from 'lucide-react'
+import { Search, Plus, History, Eye, PieChart } from 'lucide-react'
 import api from '../../utils/api'
 import Modal from '../../components/ui/Modal'
 import EmptyState from '../../components/ui/EmptyState'
 import PdfPreviewModal from '../../components/ui/PdfPreviewModal'
+import PaymentBreakdownModal from './PaymentBreakdownModal'
 import usePdfPreview from '../../utils/usePdfPreview'
 import { YEAR_LEVELS, formatCurrency, formatDate } from '../../utils/helpers'
 
@@ -22,6 +23,7 @@ export default function Payments() {
   const [history, setHistory] = useState([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [downloadingId, setDownloadingId] = useState(null)
+  const [breakdownTarget, setBreakdownTarget] = useState(null)
   const pdfPreview = usePdfPreview()
 
   function load() {
@@ -157,6 +159,14 @@ export default function Payments() {
                       >
                         <Eye size={15} />
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => setBreakdownTarget(student)}
+                        className="rounded-lg p-1.5 text-teal-600 hover:bg-teal-50"
+                        aria-label="Payment source breakdown"
+                      >
+                        <PieChart size={15} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -241,6 +251,12 @@ export default function Payments() {
         url={pdfPreview.url}
         filename={pdfPreview.filename}
         title="Billing Statement Preview"
+      />
+
+      <PaymentBreakdownModal
+        open={Boolean(breakdownTarget)}
+        onClose={() => setBreakdownTarget(null)}
+        student={breakdownTarget}
       />
     </div>
   )

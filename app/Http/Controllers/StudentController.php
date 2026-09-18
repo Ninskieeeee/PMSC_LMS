@@ -25,13 +25,11 @@ class StudentController extends Controller
         $student->load(['grades', 'payments', 'attendance']);
 
         $averageGrade = $student->grades->whereNotNull('grade')->avg('grade');
-        $totalPaid = (float) $student->payments->sum('amount_paid');
-        $totalFee = (float) $student->payments->sum('total_fee');
 
         return response()->json([
             'student' => $student->load('user'),
             'average_grade' => $averageGrade ? round($averageGrade, 2) : null,
-            'balance' => $totalFee - $totalPaid,
+            'balance' => $student->balance(),
             'events_attended' => $student->attendance->whereNotNull('scanned_at')->count(),
             'has_qr' => (bool) $student->qr_code,
         ]);
@@ -77,9 +75,9 @@ class StudentController extends Controller
 
         return response()->json([
             'payments' => $payments,
-            'total_paid' => (float) $payments->sum('amount_paid'),
-            'total_fee' => (float) $payments->sum('total_fee'),
-            'balance' => (float) ($payments->sum('total_fee') - $payments->sum('amount_paid')),
+            'total_paid' => $student->totalPaid(),
+            'total_fee' => $student->currentTotalFee(),
+            'balance' => $student->balance(),
         ]);
     }
 

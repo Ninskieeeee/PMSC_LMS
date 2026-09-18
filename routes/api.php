@@ -59,6 +59,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/students/{student}/payments', [FinanceController::class, 'payments']);
         Route::post('/students/{student}/payments', [FinanceController::class, 'storePayment']);
         Route::get('/students/{student}/billing-pdf', [FinanceController::class, 'billingPdf']);
+
+        Route::get('/students/{student}/fee-categories', [FinanceController::class, 'feeCategories']);
+        Route::post('/students/{student}/fee-categories', [FinanceController::class, 'storeFeeCategory']);
+        Route::put('/students/{student}/fee-categories/{feeCategory}', [FinanceController::class, 'updateFeeCategory']);
+        Route::delete('/students/{student}/fee-categories/{feeCategory}', [FinanceController::class, 'destroyFeeCategory']);
+        Route::get('/students/{student}/payment-breakdown', [FinanceController::class, 'paymentBreakdown']);
     });
 
     Route::middleware('role:ssg')->prefix('ssg')->group(function () {

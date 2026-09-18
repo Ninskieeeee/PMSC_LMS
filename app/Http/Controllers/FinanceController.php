@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FeeCategory;
 use App\Models\Student;
+use App\Support\PaymentAllocator;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -19,9 +21,9 @@ class FinanceController extends Controller
             ->orderBy('year_level')
             ->get()
             ->map(function (Student $student) {
-                $student->total_paid = (float) $student->payments->sum('amount_paid');
-                $student->total_fee = (float) $student->payments->sum('total_fee');
-                $student->balance = $student->total_fee - $student->total_paid;
+                $student->total_paid = $student->totalPaid();
+                $student->total_fee = $student->currentTotalFee();
+                $student->balance = $student->balance();
 
                 return $student;
             });
@@ -59,5 +61,52 @@ class FinanceController extends Controller
         $pdf = Pdf::loadView('pdf.billing-statement', ['student' => $student]);
 
         return $pdf->download("billing-statement-{$student->qr_code}.pdf");
+    }
+
+    public function feeCategories(Student $student)
+    {
+        return response()->json($student->feeCategories()->orderBy('id')->get());
+    }
+
+    public function storeFeeCategory(Request $request, Student $student)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $category = $student->feeCategories()->create($data);
+
+        return response()->json($category, 201);
+    }
+
+    public function updateFeeCategory(Request $request, Student $student, FeeCategory $feeCategory)
+    {
+        abort_unless($feeCategory->student_id === $student->id, 404);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'amount' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $feeCategory->update($data);
+
+        return response()->json($feeCategory);
+    }
+
+    public function destroyFeeCategory(Student $student, FeeCategory $feeCategory)
+    {
+        abort_unless($feeCategory->student_id === $student->id, 404);
+
+        $feeCategory->delete();
+
+        return response()->json(['message' => 'Fee category deleted.']);
+    }
+
+    public function paymentBreakdown(Student $student)
+    {
+        $student->load(['feeCategories', 'payments']);
+
+        return response()->json(PaymentAllocator::allocate($student));
     }
 }

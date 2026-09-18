@@ -41,4 +41,29 @@ class Student extends Model
     {
         return $this->hasMany(EventAttendance::class);
     }
+
+    public function feeCategories(): HasMany
+    {
+        return $this->hasMany(FeeCategory::class);
+    }
+
+    /**
+     * Each payment row carries the fee assessed as of that installment, so the
+     * currently assessed total is the most recently recorded value, not a sum
+     * across every installment.
+     */
+    public function currentTotalFee(): float
+    {
+        return (float) ($this->payments->sortByDesc('created_at')->first()?->total_fee ?? 0);
+    }
+
+    public function totalPaid(): float
+    {
+        return (float) $this->payments->sum('amount_paid');
+    }
+
+    public function balance(): float
+    {
+        return $this->currentTotalFee() - $this->totalPaid();
+    }
 }

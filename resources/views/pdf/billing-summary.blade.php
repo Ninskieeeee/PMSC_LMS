@@ -24,8 +24,8 @@
             @php $grandFee = 0; $grandPaid = 0; @endphp
             @forelse ($students as $index => $student)
                 @php
-                    $totalFee = $student->payments->sum('total_fee');
-                    $paid = $student->payments->sum('amount_paid');
+                    $totalFee = $student->currentTotalFee();
+                    $paid = $student->totalPaid();
                     $grandFee += $totalFee;
                     $grandPaid += $paid;
                 @endphp

@@ -16,6 +16,11 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        // Each payment row carries the fee assessed as of that installment, so the
+        // currently assessed total per student is its most recent payment row, not
+        // a sum across every installment.
+        $totalAssessed = Student::with('payments')->get()->sum(fn (Student $student) => $student->currentTotalFee());
+
         return response()->json([
             'total_students' => Student::count(),
             'students_by_year_level' => Student::selectRaw('year_level, count(*) as count')
@@ -26,7 +31,7 @@ class AdminController extends Controller
                 ->groupBy('role')
                 ->pluck('count', 'role'),
             'total_collected' => (float) Payment::sum('amount_paid'),
-            'total_pending' => (float) (Payment::sum('total_fee') - Payment::sum('amount_paid')),
+            'total_pending' => $totalAssessed - (float) Payment::sum('amount_paid'),
             'upcoming_events' => Event::where('date', '>=', now()->toDateString())
                 ->orderBy('date')
                 ->take(5)

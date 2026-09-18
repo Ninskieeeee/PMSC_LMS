@@ -3,35 +3,54 @@
 @section('title', 'Billing Statement')
 
 @php
-    $totalFee = $student->payments->sum('total_fee');
-    $totalPaid = $student->payments->sum('amount_paid');
+    $totalFee = $student->currentTotalFee();
+    $totalPaid = $student->totalPaid();
+    $orderedPayments = $student->payments->sortBy('date')->values();
+    $running = 0;
 @endphp
 
 @section('content')
-    <div class="meta">
-        <strong>{{ $student->user->name }}</strong> ({{ $student->qr_code }}) &nbsp;|&nbsp;
-        {{ $student->year_level }}{{ $student->strand ? ' - '.$student->strand : '' }}
+    <div class="info-box">
+        <div class="info-box-title">STUDENT INFORMATION</div>
+        <table class="info-grid">
+            <tr>
+                <td class="label">Name</td>
+                <td class="value">{{ $student->user->name }}</td>
+                <td class="label">Access Code</td>
+                <td class="value">{{ $student->qr_code }}</td>
+            </tr>
+            <tr>
+                <td class="label">Year Level</td>
+                <td class="value">{{ $student->year_level }}{{ $student->strand ? ' - '.$student->strand : '' }}</td>
+                <td class="label">Guardian</td>
+                <td class="value">{{ $student->guardian_name ?? '—' }}</td>
+            </tr>
+        </table>
     </div>
 
-    <div class="section-title">Payment History</div>
+    <div class="section-title">Payment Details</div>
     <table class="clean-table">
         <thead>
             <tr>
                 <th>Date</th>
-                <th class="text-right">Total Fee</th>
-                <th class="text-right">Amount Paid</th>
                 <th>Notes</th>
                 <th>Recorded By</th>
+                <th class="text-right">Amount Paid</th>
+                <th class="text-right">Balance</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($student->payments as $payment)
+            @forelse ($orderedPayments as $payment)
+                @php
+                    $running += (float) $payment->amount_paid;
+                    $remaining = $totalFee - $running;
+                @endphp
                 <tr>
                     <td>{{ optional($payment->date)->format('M j, Y') ?? '—' }}</td>
-                    <td class="text-right">{{ number_format($payment->total_fee, 2) }}</td>
-                    <td class="text-right">{{ number_format($payment->amount_paid, 2) }}</td>
                     <td>{{ $payment->notes ?? '—' }}</td>
                     <td>{{ $payment->recordedBy->name ?? '—' }}</td>
+                    <td class="text-right">{{ number_format($payment->amount_paid, 2) }}</td>
+                    <td class="text-right">{{ number_format($remaining, 2) }}</td>
                 </tr>
             @empty
                 <tr>
@@ -41,20 +60,23 @@
         </tbody>
     </table>
 
-    <table class="clean-table" style="margin-top: 16px;">
-        <tr>
-            <th class="text-right" style="width: 70%;">Total Fee</th>
-            <td class="text-right">{{ number_format($totalFee, 2) }}</td>
-        </tr>
-        <tr>
-            <th class="text-right">Total Paid</th>
-            <td class="text-right">{{ number_format($totalPaid, 2) }}</td>
-        </tr>
-        <tr>
-            <th class="text-right">Outstanding Balance</th>
-            <td class="text-right"><strong>{{ number_format($totalFee - $totalPaid, 2) }}</strong></td>
-        </tr>
-    </table>
+    <div class="info-box summary-box" style="width: 50%; margin-left: auto;">
+        <div class="info-box-title">SUMMARY OF CHARGES</div>
+        <table>
+            <tr>
+                <td>Total Fee</td>
+                <td class="text-right">{{ number_format($totalFee, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total Paid</td>
+                <td class="text-right">{{ number_format($totalPaid, 2) }}</td>
+            </tr>
+            <tr class="total-row">
+                <td>Outstanding Balance</td>
+                <td class="text-right">{{ number_format($totalFee - $totalPaid, 2) }}</td>
+            </tr>
+        </table>
+    </div>
 @endsection
 
 @section('signatures')
