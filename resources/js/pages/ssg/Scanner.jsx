@@ -107,16 +107,16 @@ export default function Scanner() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Attendance Scanner</h1>
-        <p className="text-sm text-gray-500">Scan a student's QR code to record event attendance.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Attendance Scanner</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Scan a student's QR code to record event attendance.</p>
       </div>
 
       <div className="max-w-xs">
-        <label className="mb-1 block text-xs font-medium text-gray-600">Event</label>
+        <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Event</label>
         <select
           value={eventId}
           onChange={(e) => { setEventId(e.target.value); stopCamera() }}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
+          className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
         >
           <option value="">Select an event…</option>
           {events.map((event) => <option key={event.id} value={event.id}>{event.name}</option>)}
@@ -126,7 +126,7 @@ export default function Scanner() {
       {cameraError && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{cameraError}</p>}
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-black">
+        <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-slate-700 bg-black">
           <video ref={videoRef} className="aspect-video w-full object-cover" muted playsInline />
           {!scanning && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70 text-white">
@@ -145,7 +145,7 @@ export default function Scanner() {
             <button
               type="button"
               onClick={stopCamera}
-              className="absolute bottom-3 right-3 rounded-lg bg-white/90 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-white"
+              className="absolute bottom-3 right-3 rounded-lg bg-white dark:bg-slate-900/90 px-3 py-1.5 text-xs font-medium text-gray-800 dark:text-slate-100 hover:bg-white dark:bg-slate-900"
             >
               Stop Scanner
             </button>
@@ -161,12 +161,12 @@ export default function Scanner() {
           )}
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
+        <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-slate-100">
             <ScanLine size={16} /> Session Scan Log
           </h2>
           {log.length === 0 ? (
-            <p className="text-sm text-gray-400">No scans yet this session.</p>
+            <p className="text-sm text-gray-400 dark:text-slate-500">No scans yet this session.</p>
           ) : (
             <div className="max-h-96 space-y-2 overflow-y-auto">
               {log.map((entry) => {
@@ -177,7 +177,7 @@ export default function Scanner() {
                       <p className={`font-medium ${entryStyle.text}`}>
                         {entry.student?.user?.name ?? entry.code ?? 'Unknown code'}
                       </p>
-                      <p className="text-xs text-gray-500">{formatDateTime(entry.time)}</p>
+                      <p className="text-xs text-gray-500 dark:text-slate-400">{formatDateTime(entry.time)}</p>
                     </div>
                     <span className={`text-xs font-semibold uppercase ${entryStyle.text}`}>{entry.type}</span>
                   </div>

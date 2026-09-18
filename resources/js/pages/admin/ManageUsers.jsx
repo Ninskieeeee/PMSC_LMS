@@ -97,8 +97,8 @@ export default function ManageUsers() {
     <div className="space-y-4">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Staff Users</h1>
-          <p className="text-sm text-gray-500">Manage admin, teacher, finance, and SSG accounts.</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Staff Users</h1>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Manage admin, teacher, finance, and SSG accounts.</p>
         </div>
         <button
           type="button"
@@ -132,7 +132,7 @@ export default function ManageUsers() {
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          className="rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
         >
           <option value="">All Roles</option>
           {STAFF_ROLES.map((role) => (
@@ -141,9 +141,9 @@ export default function ManageUsers() {
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+          <thead className="bg-gray-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase text-gray-500 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">Access Code</th>
               <th className="px-4 py-3">Name</th>
@@ -152,18 +152,18 @@ export default function ManageUsers() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading && <tr><td colSpan={5} className="px-4 py-6 text-center text-gray-400">Loading…</td></tr>}
+          <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+            {loading && <tr><td colSpan={5} className="px-4 py-6 text-center text-gray-400 dark:text-slate-500">Loading…</td></tr>}
             {!loading && users.length === 0 && (
               <tr><td colSpan={5}><EmptyState title="No staff users found" /></td></tr>
             )}
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
+              <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-slate-800">
                 <td className="px-4 py-3 font-mono text-xs">{user.access_code}</td>
-                <td className="px-4 py-3 font-medium text-gray-900">{user.name}</td>
-                <td className="px-4 py-3 text-gray-500">{user.email ?? '—'}</td>
+                <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{user.name}</td>
+                <td className="px-4 py-3 text-gray-500 dark:text-slate-400">{user.email ?? '—'}</td>
                 <td className="px-4 py-3">
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">
+                  <span className="rounded-full bg-gray-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-gray-700 dark:text-slate-200">
                     {ROLES[user.role]?.label ?? user.role}
                   </span>
                 </td>
@@ -172,7 +172,7 @@ export default function ManageUsers() {
                     <button type="button" onClick={() => setResetTarget(user)} className="rounded-lg p-1.5 text-amber-600 hover:bg-amber-50" aria-label="Reset password">
                       <KeyRound size={15} />
                     </button>
-                    <button type="button" onClick={() => openEdit(user)} className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100" aria-label="Edit">
+                    <button type="button" onClick={() => openEdit(user)} className="rounded-lg p-1.5 text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700" aria-label="Edit">
                       <Pencil size={15} />
                     </button>
                     <button type="button" onClick={() => setDeleteTarget(user)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-50" aria-label="Delete">
@@ -192,7 +192,7 @@ export default function ManageUsers() {
         title={editing ? 'Edit Staff User' : 'Add Staff User'}
         footer={
           <>
-            <button type="button" onClick={() => setModalOpen(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <button type="button" onClick={() => setModalOpen(false)} className="rounded-lg border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800">
               Cancel
             </button>
             <button type="submit" form="user-form" disabled={saving} className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 disabled:opacity-60">
@@ -204,16 +204,16 @@ export default function ManageUsers() {
         <form id="user-form" onSubmit={handleSubmit} className="space-y-3">
           {formError && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>}
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Full Name</label>
-            <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Full Name</label>
+            <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Email (optional)</label>
-            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Email (optional)</label>
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Role</label>
-            <select required value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Role</label>
+            <select required value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
               {STAFF_ROLES.map((role) => <option key={role} value={role}>{ROLES[role]?.label}</option>)}
             </select>
           </div>

@@ -16,6 +16,7 @@ import {
   X,
   LogOut,
   UserCog,
+  Settings,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { ROLES, initials } from '../../utils/helpers'
@@ -39,17 +40,20 @@ function getNavItems(role) {
         { to: '/admin/payments', label: 'Payments', icon: Wallet },
         { to: '/admin/events', label: 'Events', icon: Calendar },
         { to: '/admin/reports', label: 'Reports', icon: FileText },
+        { to: '/admin/settings', label: 'Settings', icon: Settings },
       ]
     case 'teacher':
       return [
         { to: '/teacher', label: 'Overview', icon: LayoutDashboard, end: true },
         { to: '/teacher/grades', label: 'Grades', icon: BookOpen },
         { to: '/teacher/schedule', label: 'Schedule', icon: CalendarDays },
+        { to: '/teacher/settings', label: 'Settings', icon: Settings },
       ]
     case 'finance':
       return [
         { to: '/finance', label: 'Overview', icon: LayoutDashboard, end: true },
         { to: '/finance/payments', label: 'Payments', icon: Wallet },
+        { to: '/finance/settings', label: 'Settings', icon: Settings },
       ]
     case 'ssg':
       return [
@@ -57,6 +61,7 @@ function getNavItems(role) {
         { to: '/ssg/events', label: 'Events', icon: Calendar },
         { to: '/ssg/scanner', label: 'Scanner', icon: ScanLine },
         { to: '/ssg/attendance', label: 'Attendance', icon: ClipboardList },
+        { to: '/ssg/settings', label: 'Settings', icon: Settings },
       ]
     case 'student':
     case 'parent':
@@ -67,6 +72,7 @@ function getNavItems(role) {
         { to: '/student/payments', label: 'Payments', icon: Wallet },
         ...(role !== 'parent' ? [{ to: '/student/qr', label: 'My QR Code', icon: QrCode }] : []),
         { to: '/student/events', label: 'Events', icon: Calendar },
+        { to: '/student/settings', label: 'Settings', icon: Settings },
       ]
     default:
       return []
@@ -83,7 +89,7 @@ export default function DashboardLayout() {
   const roleLabel = ROLES[role]?.label ?? role
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-slate-950">
       {mobileOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/50 md:hidden"
@@ -93,17 +99,17 @@ export default function DashboardLayout() {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col bg-white border-r border-gray-200 transition-all duration-200
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col bg-white border-r border-gray-200 transition-all duration-200 dark:border-slate-800 dark:bg-slate-900
           ${collapsed ? 'md:w-20' : 'md:w-64'}
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-64`}
       >
-        <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
+        <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200 dark:border-slate-800">
           {!collapsed && (
-            <span className="truncate text-sm font-bold text-gray-800">PMSC Clarin</span>
+            <span className="truncate text-sm font-bold text-gray-800 dark:text-slate-100">PMSC Clarin</span>
           )}
           <button
             type="button"
-            className="hidden rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 md:block"
+            className="hidden rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 md:block dark:text-slate-500 dark:hover:bg-slate-800"
             onClick={() => setCollapsed((value) => !value)}
             aria-label="Toggle sidebar"
           >
@@ -111,7 +117,7 @@ export default function DashboardLayout() {
           </button>
           <button
             type="button"
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 md:hidden"
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 md:hidden dark:text-slate-500 dark:hover:bg-slate-800"
             onClick={() => setMobileOpen(false)}
             aria-label="Close menu"
           >
@@ -128,7 +134,7 @@ export default function DashboardLayout() {
               onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive ? theme.active : `text-gray-600 ${theme.hover}`
+                  isActive ? theme.active : `text-gray-600 dark:text-slate-300 ${theme.hover} dark:hover:bg-slate-800`
                 }`
               }
               title={collapsed ? label : undefined}
@@ -139,11 +145,11 @@ export default function DashboardLayout() {
           ))}
         </nav>
 
-        <div className="border-t border-gray-200 p-3">
+        <div className="border-t border-gray-200 p-3 dark:border-slate-800">
           <button
             type="button"
             onClick={logout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"
           >
             <LogOut size={18} className="shrink-0" />
             {!collapsed && <span>Log out</span>}
@@ -171,9 +177,17 @@ export default function DashboardLayout() {
               <p className="text-sm font-semibold leading-tight">{user?.name}</p>
               <p className="text-xs text-white/70 leading-tight font-mono">{user?.access_code}</p>
             </div>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-sm font-semibold">
-              {initials(user?.name)}
-            </span>
+            {user?.avatar_url ? (
+              <img
+                src={user.avatar_url}
+                alt={user.name}
+                className="h-9 w-9 rounded-full object-cover ring-2 ring-white/20"
+              />
+            ) : (
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-sm font-semibold">
+                {initials(user?.name)}
+              </span>
+            )}
           </div>
         </header>
 

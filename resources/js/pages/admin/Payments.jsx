@@ -22,8 +22,8 @@ export default function Payments() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Payments</h1>
-        <p className="text-sm text-gray-500">School-wide payment summary.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Payments</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">School-wide payment summary.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -32,9 +32,9 @@ export default function Payments() {
         <StatCard label="Outstanding Balance" value={formatCurrency(totals.pending)} icon={TrendingDown} color="amber" />
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+          <thead className="bg-gray-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase text-gray-500 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">Student</th>
               <th className="px-4 py-3">Date</th>
@@ -44,14 +44,14 @@ export default function Payments() {
               <th className="px-4 py-3">Recorded By</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading && <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400">Loading…</td></tr>}
+          <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+            {loading && <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400 dark:text-slate-500">Loading…</td></tr>}
             {!loading && payments.length === 0 && (
               <tr><td colSpan={6}><EmptyState title="No payments recorded" /></td></tr>
             )}
             {payments.map((payment) => (
-              <tr key={payment.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-900">{payment.student?.user?.name}</td>
+              <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-slate-800">
+                <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{payment.student?.user?.name}</td>
                 <td className="px-4 py-3">{formatDate(payment.date)}</td>
                 <td className="px-4 py-3 text-right">{formatCurrency(payment.total_fee)}</td>
                 <td className="px-4 py-3 text-right">{formatCurrency(payment.amount_paid)}</td>

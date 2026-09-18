@@ -105,8 +105,8 @@ export default function ManageStudents() {
     <div className="space-y-4">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Manage Students</h1>
-          <p className="text-sm text-gray-500">Add, edit, or remove student records.</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Manage Students</h1>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Add, edit, or remove student records.</p>
         </div>
         <button
           type="button"
@@ -139,18 +139,18 @@ export default function ManageStudents() {
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name or access code…"
-            className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-gray-300 dark:border-slate-600 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
           />
         </div>
         <select
           value={yearLevel}
           onChange={(e) => setYearLevel(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          className="rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
         >
           <option value="">All Year Levels</option>
           {YEAR_LEVELS.map((level) => (
@@ -159,9 +159,9 @@ export default function ManageStudents() {
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+          <thead className="bg-gray-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase text-gray-500 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">Access Code</th>
               <th className="px-4 py-3">Name</th>
@@ -171,29 +171,29 @@ export default function ManageStudents() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
             {loading && (
-              <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400">Loading…</td></tr>
+              <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400 dark:text-slate-500">Loading…</td></tr>
             )}
             {!loading && students.length === 0 && (
               <tr><td colSpan={6}><EmptyState title="No students found" message="Try adjusting your search or filters." /></td></tr>
             )}
             {students.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-50">
+              <tr key={student.id} className="hover:bg-gray-50 dark:hover:bg-slate-800">
                 <td className="px-4 py-3 font-mono text-xs">{student.qr_code}</td>
-                <td className="px-4 py-3 font-medium text-gray-900">{student.user?.name}</td>
+                <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{student.user?.name}</td>
                 <td className="px-4 py-3">{student.year_level}</td>
                 <td className="px-4 py-3">{student.strand ?? '—'}</td>
                 <td className="px-4 py-3">
                   <div>{student.guardian_name ?? '—'}</div>
-                  <div className="text-xs text-gray-400">{student.guardian_contact}</div>
+                  <div className="text-xs text-gray-400 dark:text-slate-500">{student.guardian_contact}</div>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => openEdit(student)}
-                      className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100"
+                      className="rounded-lg p-1.5 text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700"
                       aria-label="Edit"
                     >
                       <Pencil size={15} />
@@ -220,7 +220,7 @@ export default function ManageStudents() {
         title={editing ? 'Edit Student' : 'Add Student'}
         footer={
           <>
-            <button type="button" onClick={() => setModalOpen(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <button type="button" onClick={() => setModalOpen(false)} className="rounded-lg border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800">
               Cancel
             </button>
             <button type="submit" form="student-form" disabled={saving} className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 disabled:opacity-60">
@@ -232,45 +232,45 @@ export default function ManageStudents() {
         <form id="student-form" onSubmit={handleSubmit} className="space-y-3">
           {formError && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>}
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Full Name</label>
-            <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Full Name</label>
+            <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Email (optional)</label>
-            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Email (optional)</label>
+            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Year Level</label>
-              <select required value={form.year_level} onChange={(e) => setForm({ ...form, year_level: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
+              <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Year Level</label>
+              <select required value={form.year_level} onChange={(e) => setForm({ ...form, year_level: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
                 {YEAR_LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Strand (G11-12)</label>
-              <input value={form.strand} onChange={(e) => setForm({ ...form, strand: e.target.value })} placeholder="e.g. HUMSS" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+              <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Strand (G11-12)</label>
+              <input value={form.strand} onChange={(e) => setForm({ ...form, strand: e.target.value })} placeholder="e.g. HUMSS" className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Address</label>
-            <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Address</label>
+            <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Guardian Name</label>
-              <input value={form.guardian_name} onChange={(e) => setForm({ ...form, guardian_name: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+              <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Guardian Name</label>
+              <input value={form.guardian_name} onChange={(e) => setForm({ ...form, guardian_name: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Guardian Contact</label>
-              <input value={form.guardian_contact} onChange={(e) => setForm({ ...form, guardian_contact: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+              <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Guardian Contact</label>
+              <input value={form.guardian_contact} onChange={(e) => setForm({ ...form, guardian_contact: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Date Enrolled</label>
-            <input type="date" value={form.date_enrolled} onChange={(e) => setForm({ ...form, date_enrolled: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Date Enrolled</label>
+            <input type="date" value={form.date_enrolled} onChange={(e) => setForm({ ...form, date_enrolled: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           {editing && (
-            <p className="text-xs text-gray-400">Enrolled {formatDate(editing.created_at)}</p>
+            <p className="text-xs text-gray-400 dark:text-slate-500">Enrolled {formatDate(editing.created_at)}</p>
           )}
         </form>
       </Modal>

@@ -17,7 +17,7 @@ export default function Overview() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <p className="text-sm text-gray-500">Loading dashboard…</p>
+  if (loading) return <p className="text-sm text-gray-500 dark:text-slate-400">Loading dashboard…</p>
   if (error) return <p className="text-sm text-red-600">{error}</p>
 
   const staffCounts = data.staff_counts ?? {}
@@ -26,8 +26,8 @@ export default function Overview() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Admin Overview</h1>
-        <p className="text-sm text-gray-500">A snapshot of the whole school portal.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Admin Overview</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">A snapshot of the whole school portal.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -38,30 +38,30 @@ export default function Overview() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h2 className="mb-3 text-sm font-semibold text-gray-800">Students by Year Level</h2>
+        <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+          <h2 className="mb-3 text-sm font-semibold text-gray-800 dark:text-slate-100">Students by Year Level</h2>
           <div className="space-y-2">
             {Object.entries(data.students_by_year_level ?? {}).map(([level, count]) => (
               <div key={level} className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">{level}</span>
-                <span className="font-medium text-gray-900">{count}</span>
+                <span className="text-gray-600 dark:text-slate-300">{level}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{count}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
+        <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-slate-100">
             <Calendar size={16} /> Upcoming Events
           </h2>
           <div className="space-y-2">
             {(data.upcoming_events ?? []).length === 0 && (
-              <p className="text-sm text-gray-500">No upcoming events.</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400">No upcoming events.</p>
             )}
             {(data.upcoming_events ?? []).map((event) => (
               <div key={event.id} className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">{event.name}</span>
-                <span className="font-medium text-gray-900">{formatDate(event.date)}</span>
+                <span className="text-gray-600 dark:text-slate-300">{event.name}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{formatDate(event.date)}</span>
               </div>
             ))}
           </div>

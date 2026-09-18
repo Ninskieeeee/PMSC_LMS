@@ -23,13 +23,13 @@ export default function Overview() {
   const todaySchedule = schedule.filter((item) => item.day === TODAY)
   const subjectCount = new Set(schedule.map((item) => item.subject)).size
 
-  if (loading) return <p className="text-sm text-gray-500">Loading…</p>
+  if (loading) return <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Teacher Overview</h1>
-        <p className="text-sm text-gray-500">Your teaching load at a glance.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Teacher Overview</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Your teaching load at a glance.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -38,19 +38,19 @@ export default function Overview() {
         <StatCard label="Students in Scope" value={students.length} icon={Users} color="blue" />
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <h2 className="mb-3 text-sm font-semibold text-gray-800">Today's Schedule ({TODAY})</h2>
+      <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+        <h2 className="mb-3 text-sm font-semibold text-gray-800 dark:text-slate-100">Today's Schedule ({TODAY})</h2>
         {todaySchedule.length === 0 ? (
           <EmptyState title="No classes today" />
         ) : (
           <div className="space-y-2">
             {todaySchedule.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm">
+              <div key={item.id} className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-slate-800 px-3 py-2 text-sm">
                 <div>
-                  <p className="font-medium text-gray-800">{item.subject}</p>
-                  <p className="text-xs text-gray-500">{item.year_level} &middot; {item.room ?? 'No room set'}</p>
+                  <p className="font-medium text-gray-800 dark:text-slate-100">{item.subject}</p>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">{item.year_level} &middot; {item.room ?? 'No room set'}</p>
                 </div>
-                <span className="text-xs font-medium text-gray-600">{item.time}</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-slate-300">{item.time}</span>
               </div>
             ))}
           </div>

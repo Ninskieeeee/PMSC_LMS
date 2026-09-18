@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SsgController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
@@ -15,6 +16,12 @@ Route::post('/contact', [ContactController::class, 'store'])->middleware('thrott
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar']);
+    Route::delete('/profile/avatar', [ProfileController::class, 'destroyAvatar']);
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+    Route::put('/profile/theme', [ProfileController::class, 'updateTheme']);
 
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard']);

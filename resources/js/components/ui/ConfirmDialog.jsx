@@ -16,18 +16,18 @@ export default function ConfirmDialog({
       <div className="flex gap-3">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-            danger ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
+            danger ? 'bg-red-100 text-red-600 dark:bg-red-950/50 dark:text-red-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'
           }`}
         >
           <AlertTriangle size={20} />
         </div>
-        <p className="text-sm text-gray-600">{message}</p>
+        <p className="text-sm text-gray-600 dark:text-slate-300">{message}</p>
       </div>
       <div className="mt-5 flex justify-end gap-2">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           Cancel
         </button>

@@ -11,13 +11,13 @@ export default function Schedule() {
     api.get('/teacher/schedule').then((res) => setSchedule(res.data)).finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <p className="text-sm text-gray-500">Loading schedule…</p>
+  if (loading) return <p className="text-sm text-gray-500 dark:text-slate-400">Loading schedule…</p>
 
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">My Schedule</h1>
-        <p className="text-sm text-gray-500">Your weekly teaching schedule.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">My Schedule</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Your weekly teaching schedule.</p>
       </div>
 
       {schedule.length === 0 ? (
@@ -27,10 +27,10 @@ export default function Schedule() {
           {DAYS.map((day) => {
             const items = schedule.filter((item) => item.day === day)
             return (
-              <div key={day} className="rounded-xl border border-gray-200 bg-white p-4">
-                <h2 className="mb-3 text-sm font-semibold text-gray-800">{day}</h2>
+              <div key={day} className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+                <h2 className="mb-3 text-sm font-semibold text-gray-800 dark:text-slate-100">{day}</h2>
                 {items.length === 0 ? (
-                  <p className="text-xs text-gray-400">No classes.</p>
+                  <p className="text-xs text-gray-400 dark:text-slate-500">No classes.</p>
                 ) : (
                   <div className="space-y-2">
                     {items.map((item) => (

@@ -87,29 +87,29 @@ export default function Payments() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Payments</h1>
-        <p className="text-sm text-gray-500">Record payments and track student balances.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Payments</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Record payments and track student balances.</p>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name or access code…"
-            className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-gray-300 dark:border-slate-600 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
           />
         </div>
-        <select value={yearLevel} onChange={(e) => setYearLevel(e.target.value)} className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
+        <select value={yearLevel} onChange={(e) => setYearLevel(e.target.value)} className="rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
           <option value="">All Year Levels</option>
           {YEAR_LEVELS.map((level) => <option key={level} value={level}>{level}</option>)}
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+          <thead className="bg-gray-50 dark:bg-slate-800 text-left text-xs font-semibold uppercase text-gray-500 dark:text-slate-400">
             <tr>
               <th className="px-4 py-3">Student</th>
               <th className="px-4 py-3">Year Level</th>
@@ -120,8 +120,8 @@ export default function Payments() {
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading && <tr><td colSpan={7} className="px-4 py-6 text-center text-gray-400">Loading…</td></tr>}
+          <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+            {loading && <tr><td colSpan={7} className="px-4 py-6 text-center text-gray-400 dark:text-slate-500">Loading…</td></tr>}
             {!loading && students.length === 0 && (
               <tr><td colSpan={7}><EmptyState title="No students found" /></td></tr>
             )}
@@ -133,8 +133,8 @@ export default function Payments() {
                   ? { label: 'Partial', tone: 'bg-amber-100 text-amber-700' }
                   : { label: 'Unpaid', tone: 'bg-red-100 text-red-700' }
               return (
-                <tr key={student.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{student.user?.name}</td>
+                <tr key={student.id} className="hover:bg-gray-50 dark:hover:bg-slate-800">
+                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{student.user?.name}</td>
                   <td className="px-4 py-3">{student.year_level}</td>
                   <td className="px-4 py-3 text-right">{formatCurrency(student.total_fee)}</td>
                   <td className="px-4 py-3 text-right">{formatCurrency(student.total_paid)}</td>
@@ -147,7 +147,7 @@ export default function Payments() {
                       <button type="button" onClick={() => openPay(student)} className="rounded-lg p-1.5 text-amber-600 hover:bg-amber-50" aria-label="Record payment">
                         <Plus size={15} />
                       </button>
-                      <button type="button" onClick={() => openHistory(student)} className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100" aria-label="Payment history">
+                      <button type="button" onClick={() => openHistory(student)} className="rounded-lg p-1.5 text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700" aria-label="Payment history">
                         <History size={15} />
                       </button>
                       <button
@@ -174,7 +174,7 @@ export default function Payments() {
         title={`Record Payment — ${payTarget?.user?.name ?? ''}`}
         footer={
           <>
-            <button type="button" onClick={() => setPayTarget(null)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <button type="button" onClick={() => setPayTarget(null)} className="rounded-lg border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800">
               Cancel
             </button>
             <button type="submit" form="payment-form" disabled={saving} className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60">
@@ -187,33 +187,33 @@ export default function Payments() {
           {payError && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{payError}</p>}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Total Fee</label>
-              <input type="number" min="0" step="0.01" required value={payForm.total_fee} onChange={(e) => setPayForm({ ...payForm, total_fee: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+              <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Total Fee</label>
+              <input type="number" min="0" step="0.01" required value={payForm.total_fee} onChange={(e) => setPayForm({ ...payForm, total_fee: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Amount Paid</label>
-              <input type="number" min="0" step="0.01" required value={payForm.amount_paid} onChange={(e) => setPayForm({ ...payForm, amount_paid: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+              <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Amount Paid</label>
+              <input type="number" min="0" step="0.01" required value={payForm.amount_paid} onChange={(e) => setPayForm({ ...payForm, amount_paid: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Date</label>
-            <input type="date" value={payForm.date} onChange={(e) => setPayForm({ ...payForm, date: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Date</label>
+            <input type="date" value={payForm.date} onChange={(e) => setPayForm({ ...payForm, date: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Notes</label>
-            <input value={payForm.notes} onChange={(e) => setPayForm({ ...payForm, notes: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Notes</label>
+            <input value={payForm.notes} onChange={(e) => setPayForm({ ...payForm, notes: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
           </div>
         </form>
       </Modal>
 
       <Modal open={Boolean(historyTarget)} onClose={() => setHistoryTarget(null)} title={`Payment History — ${historyTarget?.user?.name ?? ''}`} size="lg">
         {historyLoading ? (
-          <p className="text-sm text-gray-500">Loading…</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
         ) : history.length === 0 ? (
           <EmptyState title="No payments recorded yet" />
         ) : (
           <table className="w-full text-sm">
-            <thead className="text-left text-xs font-semibold uppercase text-gray-500">
+            <thead className="text-left text-xs font-semibold uppercase text-gray-500 dark:text-slate-400">
               <tr>
                 <th className="py-2">Date</th>
                 <th className="py-2 text-right">Total Fee</th>
@@ -222,7 +222,7 @@ export default function Payments() {
                 <th className="py-2">Recorded By</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {history.map((payment) => (
                 <tr key={payment.id}>
                   <td className="py-2">{formatDate(payment.date)}</td>

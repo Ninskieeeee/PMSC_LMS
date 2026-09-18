@@ -19,13 +19,13 @@ export default function Overview() {
     return { upcoming, totalAttendance }
   }, [events])
 
-  if (loading) return <p className="text-sm text-gray-500">Loading…</p>
+  if (loading) return <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">SSG Overview</h1>
-        <p className="text-sm text-gray-500">Events and attendance at a glance.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">SSG Overview</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Events and attendance at a glance.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -34,15 +34,15 @@ export default function Overview() {
         <StatCard label="Total Scans" value={stats.totalAttendance} icon={ScanLine} color="green" />
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
+      <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+        <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-slate-100">
           <Users size={16} /> Recent Events
         </h2>
         <div className="space-y-2">
           {events.slice(0, 6).map((event) => (
             <div key={event.id} className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">{event.name}</span>
-              <span className="font-medium text-gray-900">{formatDate(event.date)} &middot; {event.attendance_count} scans</span>
+              <span className="text-gray-600 dark:text-slate-300">{event.name}</span>
+              <span className="font-medium text-gray-900 dark:text-white">{formatDate(event.date)} &middot; {event.attendance_count} scans</span>
             </div>
           ))}
         </div>

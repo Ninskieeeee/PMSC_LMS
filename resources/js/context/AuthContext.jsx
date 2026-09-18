@@ -48,6 +48,18 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  const updateUser = useCallback((updates) => {
+    setUser((current) => {
+      const next = { ...current, ...updates }
+      try {
+        localStorage.setItem('pmsc_user', JSON.stringify(next))
+      } catch {
+        // Ignore storage errors (private browsing, etc).
+      }
+      return next
+    })
+  }, [])
+
   // 15-minute inactivity auto-logout.
   useEffect(() => {
     if (!user) return undefined
@@ -74,6 +86,7 @@ export function AuthProvider({ children }) {
     loading,
     login,
     logout,
+    updateUser,
     isAuthenticated: Boolean(user),
   }
 

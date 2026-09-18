@@ -1,8 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import DashboardLayout from './components/layout/DashboardLayout'
 import LoginPage from './pages/auth/LoginPage'
 import LandingPage from './pages/LandingPage'
+import SettingsPage from './pages/SettingsPage'
 
 import AdminOverview from './pages/admin/Overview'
 import ManageStudents from './pages/admin/ManageStudents'
@@ -82,6 +84,7 @@ function AppRoutes() {
         <Route path="payments" element={<AdminPayments />} />
         <Route path="events" element={<AdminEvents />} />
         <Route path="reports" element={<AdminReports />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
 
       <Route
@@ -95,6 +98,7 @@ function AppRoutes() {
         <Route index element={<TeacherOverview />} />
         <Route path="grades" element={<TeacherGrades />} />
         <Route path="schedule" element={<TeacherSchedule />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
 
       <Route
@@ -107,6 +111,7 @@ function AppRoutes() {
       >
         <Route index element={<FinanceOverview />} />
         <Route path="payments" element={<FinancePayments />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
 
       <Route
@@ -121,6 +126,7 @@ function AppRoutes() {
         <Route path="events" element={<SsgEvents />} />
         <Route path="scanner" element={<SsgScanner />} />
         <Route path="attendance" element={<SsgAttendance />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
 
       <Route
@@ -137,6 +143,7 @@ function AppRoutes() {
         <Route path="payments" element={<StudentPayments />} />
         <Route path="qr" element={<StudentQr />} />
         <Route path="events" element={<StudentEvents />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -148,7 +155,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
+        <ThemeProvider>
+          <AppRoutes />
+        </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
   )

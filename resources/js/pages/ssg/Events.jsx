@@ -82,55 +82,55 @@ export default function Events() {
     <div className="space-y-4">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Events</h1>
-          <p className="text-sm text-gray-500">Create and manage school events.</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Events</h1>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Create and manage school events.</p>
         </div>
         <button type="button" onClick={openCreate} className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
           <Plus size={16} /> New Event
         </button>
       </div>
 
-      {loading && <p className="text-sm text-gray-400">Loading…</p>}
+      {loading && <p className="text-sm text-gray-400 dark:text-slate-500">Loading…</p>}
       {!loading && events.length === 0 && <EmptyState icon={CalendarDays} title="No events yet" />}
 
       <div className="space-y-3">
         {events.map((event) => (
-          <div key={event.id} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div key={event.id} className="overflow-hidden rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
             <div className="flex items-center justify-between px-4 py-3">
               <button type="button" onClick={() => toggleExpand(event)} className="flex flex-1 items-center justify-between text-left">
                 <div>
-                  <p className="font-medium text-gray-900">{event.name}</p>
-                  <p className="text-xs text-gray-500">{formatDate(event.date)} &middot; {event.attendance_count} attendee(s)</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{event.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">{formatDate(event.date)} &middot; {event.attendance_count} attendee(s)</p>
                 </div>
               </button>
               <div className="flex items-center gap-2">
                 <button type="button" onClick={() => setDeleteTarget(event)} className="rounded-lg p-1.5 text-red-500 hover:bg-red-50" aria-label="Delete event">
                   <Trash2 size={15} />
                 </button>
-                <button type="button" onClick={() => toggleExpand(event)} className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100">
+                <button type="button" onClick={() => toggleExpand(event)} className="rounded-lg p-1.5 text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700">
                   {expanded === event.id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                 </button>
               </div>
             </div>
 
             {expanded === event.id && (
-              <div className="border-t border-gray-100 px-4 py-3">
-                {event.description && <p className="mb-3 text-sm text-gray-500">{event.description}</p>}
-                {attendanceLoading && !attendance[event.id] && <p className="text-sm text-gray-400">Loading attendance…</p>}
-                {attendance[event.id] && attendance[event.id].length === 0 && <p className="text-sm text-gray-400">No attendees yet.</p>}
+              <div className="border-t border-gray-100 dark:border-slate-800 px-4 py-3">
+                {event.description && <p className="mb-3 text-sm text-gray-500 dark:text-slate-400">{event.description}</p>}
+                {attendanceLoading && !attendance[event.id] && <p className="text-sm text-gray-400 dark:text-slate-500">Loading attendance…</p>}
+                {attendance[event.id] && attendance[event.id].length === 0 && <p className="text-sm text-gray-400 dark:text-slate-500">No attendees yet.</p>}
                 {attendance[event.id] && attendance[event.id].length > 0 && (
                   <table className="w-full text-sm">
-                    <thead className="text-left text-xs font-semibold uppercase text-gray-500">
+                    <thead className="text-left text-xs font-semibold uppercase text-gray-500 dark:text-slate-400">
                       <tr>
                         <th className="py-2">Student</th>
                         <th className="py-2">Access Code</th>
                         <th className="py-2">Scanned At</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                       {attendance[event.id].map((record) => (
                         <tr key={record.id}>
-                          <td className="py-2 font-medium text-gray-900">{record.student?.user?.name}</td>
+                          <td className="py-2 font-medium text-gray-900 dark:text-white">{record.student?.user?.name}</td>
                           <td className="py-2 font-mono text-xs">{record.student?.qr_code}</td>
                           <td className="py-2">{formatDateTime(record.scanned_at)}</td>
                         </tr>
@@ -150,7 +150,7 @@ export default function Events() {
         title="New Event"
         footer={
           <>
-            <button type="button" onClick={() => setModalOpen(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+            <button type="button" onClick={() => setModalOpen(false)} className="rounded-lg border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-800">Cancel</button>
             <button type="submit" form="event-form" disabled={saving} className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-60">
               {saving ? 'Saving…' : 'Create Event'}
             </button>
@@ -160,16 +160,16 @@ export default function Events() {
         <form id="event-form" onSubmit={handleSubmit} className="space-y-3">
           {formError && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>}
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Event Name</label>
-            <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Event Name</label>
+            <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Date</label>
-            <input type="date" required value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Date</label>
+            <input type="date" required value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-600">Description</label>
-            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
+            <label className="mb-1 block text-xs font-medium text-gray-600 dark:text-slate-300">Description</label>
+            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="w-full rounded-lg border border-gray-300 dark:border-slate-600 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none" />
           </div>
         </form>
       </Modal>

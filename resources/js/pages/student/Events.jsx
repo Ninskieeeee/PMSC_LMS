@@ -12,21 +12,21 @@ export default function Events() {
     api.get('/student/events').then((res) => setData(res.data)).finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <p className="text-sm text-gray-500">Loading…</p>
+  if (loading) return <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
 
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Events</h1>
-        <p className="text-sm text-gray-500">Event participation and attendance rate.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Events</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Event participation and attendance rate.</p>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
         <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-gray-800">Attendance Rate</span>
-          <span className="font-semibold text-gray-900">{data.attendance_rate}%</span>
+          <span className="font-medium text-gray-800 dark:text-slate-100">Attendance Rate</span>
+          <span className="font-semibold text-gray-900 dark:text-white">{data.attendance_rate}%</span>
         </div>
-        <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-gray-100">
+        <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-800">
           <div className="h-full rounded-full bg-teal-600 transition-all" style={{ width: `${data.attendance_rate}%` }} />
         </div>
       </div>
@@ -36,10 +36,10 @@ export default function Events() {
       ) : (
         <div className="space-y-2">
           {data.events.map((event) => (
-            <div key={event.id} className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3">
+            <div key={event.id} className="flex items-center justify-between rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3">
               <div>
-                <p className="font-medium text-gray-900">{event.name}</p>
-                <p className="text-xs text-gray-500">
+                <p className="font-medium text-gray-900 dark:text-white">{event.name}</p>
+                <p className="text-xs text-gray-500 dark:text-slate-400">
                   {formatDate(event.date)}
                   {event.attended && event.scanned_at ? ` • Scanned ${formatDateTime(event.scanned_at)}` : ''}
                 </p>

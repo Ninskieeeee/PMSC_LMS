@@ -38,16 +38,16 @@ export default function Qr() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">My QR Code</h1>
-        <p className="text-sm text-gray-500">Present this code for event attendance scanning.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">My QR Code</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Present this code for event attendance scanning.</p>
       </div>
 
       {loading ? (
-        <p className="text-sm text-gray-500">Loading…</p>
+        <p className="text-sm text-gray-500 dark:text-slate-400">Loading…</p>
       ) : (
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white p-8">
-          <canvas ref={canvasRef} className="rounded-lg border border-gray-100" />
-          <p className="font-mono text-sm text-gray-600">{qrCode}</p>
+        <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8">
+          <canvas ref={canvasRef} className="rounded-lg border border-gray-100 dark:border-slate-800" />
+          <p className="font-mono text-sm text-gray-600 dark:text-slate-300">{qrCode}</p>
           <button
             type="button"
             onClick={download}
